@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-deployment
+  namespace: market
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: customer-pod
+  template:
+    metadata:
+      labels:
+        app: customer-pod
+      annotations:
+        kubernetes.io/change-cause: "winmorre/k8s:customer-v1"
+    spec:
+      containers:
+      - name: customer-pod
+        image: "winmorre/k8s:customer-v1"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8009
+          name: http-customer
+        livenessProbe: #setting up a liveness probe for this container
+          httpGet:
+            path: /health
+            port: 8009
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+          periodSeconds: 5
+          successThreshold: 2
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8009
+          initialDelaySeconds: 20
+          timeoutSeconds: 1
+          failureThreshold: 3
+          periodSeconds: 5
+          successThreshold: 2
+      imagePullSecrets:
+        - name: regcred

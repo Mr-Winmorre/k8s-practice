@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emptydir-volume
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: emptydir-volume
+  template:
+    metadata:
+      labels:
+        app: emptydir-volume
+    spec:
+      volumes:
+        - name: cache
+          emptyDir: {}         
+      containers:
+      - name: one
+        image: busybox #it is an image use for testing purposes
+        command:
+          - "/bin/sh"
+        args:
+          - "-c"
+          - "touch /foo/bar.txt && sleep 3600"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        volumeMounts:
+          - mountPath: /foo
+            name: cache
+      - name: two
+        image: busybox #it is an image use for testing purposes
+        command:
+          - "sleep"
+          - "3600"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        volumeMounts:
+          - mountPath: /foo
+            name: cache

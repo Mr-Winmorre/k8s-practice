@@ -1,0 +1,11 @@
+FROM python:3.10
+
+WORKDIR /payment
+
+COPY ./requirements.txt /payment/requirements.txt
+
+RUN pip install --no-cache-dir --upgrade -r /payment/requirements.txt
+
+COPY ./app /payment/app
+
+CMD ["uvicorn", "app.main:app","--host","0.0.0.0", "--port", "8008"]

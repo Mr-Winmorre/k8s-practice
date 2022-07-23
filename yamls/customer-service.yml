@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: customer-svc
+  namespace: market
+spec:
+  type: ClusterIP
+  selector:
+    app: customer-pod
+  ports:
+  - port: 8009
+    targetPort: 8009
+
+# you can specify the containerPort name in place of the port at the targetPort place

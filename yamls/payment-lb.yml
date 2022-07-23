@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-lb-svc
+  labels:
+    name: payment-lb-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: payment-pod
+  ports:
+  - port: 8008
+    targetPort: 8008

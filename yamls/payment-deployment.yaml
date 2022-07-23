@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-deployment
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: payment-pod
+  template:
+    metadata:
+      labels:
+        app: payment-pod
+      annotations:
+        kubernetes.io/change-cause: "winmorre/k8s:payment-v1"
+    spec:
+      containers:
+      - name: payment-pod
+        image: "winmorre/k8s:payment-v1"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8008
+          name: http-payment
+
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: payment
+# spec:
+#   type: ClusterIP
+#   selector:
+#     app: payment
+#   ports:
+#   - port: 8008
+#     targetPort: 8008

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: customer-lb-svc
+  namespace: market
+  labels:
+    name: customer-lb-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: customer-pod
+  ports:
+  - port: 8009
+    targetPort: 8009
